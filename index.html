@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Divisibility Bingo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="top-bar">
+      <div>
+        <p class="eyebrow">Year 7 Maths Starter</p>
+        <h1>Divisibility Bingo</h1>
+      </div>
+      <button id="fullscreenBtn" class="secondary-btn" type="button">Fullscreen</button>
+    </header>
+
+    <section id="setupPanel" class="panel setup-panel">
+      <div class="setup-text">
+        <h2>Copy 9 numbers into your 3×3 bingo grid.</h2>
+        <p>Choose from the projected 4×4 grid. Repeats are allowed.</p>
+      </div>
+      <div id="projectedGrid" class="projected-grid" aria-label="Projected bingo number choices"></div>
+      <div class="setup-actions">
+        <button id="newGridBtn" type="button">New 4×4 Grid</button>
+        <button id="startBtn" type="button">Start Game</button>
+      </div>
+    </section>
+
+    <section id="gamePanel" class="panel game-panel hidden">
+      <div class="question-card">
+        <p id="roundLabel" class="round-label">Question 1</p>
+        <h2 id="questionText">Which ONE number can 456 be divided by?</h2>
+      </div>
+
+      <div id="answerChoices" class="answer-choices" aria-label="Answer choices"></div>
+
+      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+
+      <div class="game-actions">
+        <button id="revealBtn" type="button">Reveal Answer</button>
+        <button id="nextBtn" type="button">Next Question</button>
+        <button id="backToGridBtn" class="secondary-btn" type="button">Back to Grid</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
