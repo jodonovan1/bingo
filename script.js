@@ -7,20 +7,23 @@ const questionText = document.getElementById('questionText');
 const answerChoices = document.getElementById('answerChoices');
 const feedback = document.getElementById('feedback');
 const roundLabel = document.getElementById('roundLabel');
-const answerHistoryPanel = document.getElementById('answerHistoryPanel');
 
 const newGridBtn = document.getElementById('newGridBtn');
 const startBtn = document.getElementById('startBtn');
 const revealBtn = document.getElementById('revealBtn');
 const nextBtn = document.getElementById('nextBtn');
-const checkBtn = document.getElementById('checkBtn');
 const backToGridBtn = document.getElementById('backToGridBtn');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
+const checkSoFarBtn = document.getElementById('checkSoFarBtn');
+const historyModal = document.getElementById('historyModal');
+const historyContent = document.getElementById('historyContent');
+const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+const resumeGameBtn = document.getElementById('resumeGameBtn');
 
 let currentQuestion = null;
 let questionNumber = 0;
 let recentNumbers = [];
-let answerHistory = [];
+let answerHistory = []; // Records every question as soon as it appears, not only after Reveal Answer is clicked.
 
 const explanations = {
   2: number => `${number} can be divided by 2 because it ends in an even digit.`,
@@ -57,8 +60,6 @@ function startGame() {
   questionNumber = 0;
   recentNumbers = [];
   answerHistory = [];
-  answerHistoryPanel.classList.add('hidden');
-  answerHistoryPanel.innerHTML = '';
   nextQuestion();
 }
 
@@ -70,6 +71,10 @@ function backToGrid() {
 function nextQuestion() {
   currentQuestion = generateQuestion();
   questionNumber += 1;
+  currentQuestion.questionNumber = questionNumber;
+
+  // Store the answer immediately, not when Reveal Answer is clicked.
+  recordAskedQuestion(currentQuestion);
 
   roundLabel.textContent = `Question ${questionNumber}`;
   questionText.textContent = `Which ONE number can ${currentQuestion.number} be divided by?`;
@@ -85,7 +90,6 @@ function nextQuestion() {
 
   feedback.classList.add('hidden');
   feedback.textContent = '';
-  answerHistoryPanel.classList.add('hidden');
   revealBtn.disabled = false;
 }
 
@@ -101,34 +105,63 @@ function revealAnswer() {
 
   feedback.innerHTML = `<strong>Answer: ${currentQuestion.correctDivisor}</strong><br>${explanations[currentQuestion.correctDivisor](currentQuestion.number)}`;
   feedback.classList.remove('hidden');
-  addToAnswerHistory(currentQuestion);
   revealBtn.disabled = true;
+
+  markCurrentQuestionRevealed();
 }
 
-function addToAnswerHistory(question) {
-  const alreadyStored = answerHistory.some(item => item.questionNumber === questionNumber);
+
+
+function markCurrentQuestionRevealed() {
+  if (!currentQuestion) return;
+  const storedQuestion = answerHistory.find(item => item.questionNumber === currentQuestion.questionNumber);
+  if (storedQuestion) {
+    storedQuestion.revealed = true;
+  }
+}
+
+function recordAskedQuestion(question) {
+  const alreadyStored = answerHistory.some(item => item.questionNumber === question.questionNumber);
   if (alreadyStored) return;
 
   answerHistory.push({
-    questionNumber,
+    questionNumber: question.questionNumber,
     number: question.number,
-    correctDivisor: question.correctDivisor
+    correctDivisor: question.correctDivisor,
+    explanation: explanations[question.correctDivisor](question.number),
+    revealed: false
   });
 }
 
-function checkSoFar() {
-  if (answerHistory.length === 0) {
-    answerHistoryPanel.innerHTML = '<h3>Answers so far</h3><p>No answers have been revealed yet.</p>';
-    answerHistoryPanel.classList.remove('hidden');
-    return;
+function showAnswersSoFar() {
+  // Safety check: if a current question exists but somehow has not been recorded,
+  // record it before opening the answers list.
+  if (currentQuestion && !answerHistory.some(item => item.questionNumber === currentQuestion.questionNumber)) {
+    recordAskedQuestion(currentQuestion);
   }
 
-  const items = answerHistory
-    .map(item => `<li>Q${item.questionNumber}: ${item.number} → ${item.correctDivisor}</li>`)
-    .join('');
+  if (answerHistory.length === 0) {
+    historyContent.innerHTML = '<p class="history-empty">No questions have been asked yet.</p>';
+  } else {
+    historyContent.innerHTML = `
+      <ol class="history-list">
+        ${answerHistory.map(item => `
+          <li>
+            <strong>Question ${item.questionNumber}:</strong>
+            ${item.number} → <strong>${item.correctDivisor}</strong>
+            <span class="history-status">${item.revealed ? 'revealed' : 'not revealed yet'}</span><br>
+            <span>${item.explanation}</span>
+          </li>
+        `).join('')}
+      </ol>
+    `;
+  }
 
-  answerHistoryPanel.innerHTML = `<h3>Answers so far</h3><ol>${items}</ol>`;
-  answerHistoryPanel.classList.remove('hidden');
+  historyModal.classList.remove('hidden');
+}
+
+function closeAnswersSoFar() {
+  historyModal.classList.add('hidden');
 }
 
 function generateQuestion() {
@@ -215,8 +248,16 @@ newGridBtn.addEventListener('click', generateGrid);
 startBtn.addEventListener('click', startGame);
 revealBtn.addEventListener('click', revealAnswer);
 nextBtn.addEventListener('click', nextQuestion);
-checkBtn.addEventListener('click', checkSoFar);
 backToGridBtn.addEventListener('click', backToGrid);
 fullscreenBtn.addEventListener('click', toggleFullscreen);
+checkSoFarBtn.addEventListener('click', showAnswersSoFar);
+closeHistoryBtn.addEventListener('click', closeAnswersSoFar);
+resumeGameBtn.addEventListener('click', closeAnswersSoFar);
+historyModal.addEventListener('click', event => {
+  if (event.target === historyModal) closeAnswersSoFar();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeAnswersSoFar();
+});
 
 generateGrid();

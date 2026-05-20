@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- redeploy -->
 <html lang="en-AU">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Divisibility Bingo</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
+  <!-- version 5: Check so far records questions immediately, even before reveal -->
   <main class="app-shell">
     <header class="top-bar">
       <div>
@@ -39,17 +39,29 @@
 
       <div id="feedback" class="feedback hidden" aria-live="polite"></div>
 
-      <div id="answerHistoryPanel" class="answer-history hidden" aria-live="polite"></div>
-
       <div class="game-actions">
         <button id="revealBtn" type="button">Reveal Answer</button>
         <button id="nextBtn" type="button">Next Question</button>
-        <button id="checkBtn" class="highlight-btn" type="button">Check so far</button>
+        <button id="checkSoFarBtn" class="check-btn" type="button">Check so far</button>
         <button id="backToGridBtn" class="secondary-btn" type="button">Back to Grid</button>
       </div>
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <div id="historyModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="historyTitle">Answers so far</h2>
+        <p class="modal-subtitle">Includes questions that have been asked, even if the answer has not been revealed on the main screen.</p>
+        <button id="closeHistoryBtn" class="secondary-btn close-btn" type="button" aria-label="Close answers so far">×</button>
+      </div>
+      <div id="historyContent" class="history-content"></div>
+      <div class="modal-actions">
+        <button id="resumeGameBtn" type="button">Resume game</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=5"></script>
 </body>
 </html>
