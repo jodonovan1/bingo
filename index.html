@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<!-- redeploy -->
 <html lang="en-AU">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Divisibility Bingo</title>
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=20260521b" />
 </head>
 <body>
-  <!-- version 5: Check so far records questions immediately, even before reveal -->
   <main class="app-shell">
     <header class="top-bar">
       <div>
@@ -49,20 +47,17 @@
     </section>
   </main>
 
-  <div id="historyModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+
+  <div id="answersModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="answersModalTitle">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="historyTitle">Answers so far</h2>
-        <p class="modal-subtitle">Includes questions that have been asked, even if the answer has not been revealed on the main screen.</p>
-        <button id="closeHistoryBtn" class="secondary-btn close-btn" type="button" aria-label="Close answers so far">×</button>
+        <h2 id="answersModalTitle">Answers so far</h2>
+        <button id="closeModalBtn" class="secondary-btn" type="button">Close</button>
       </div>
-      <div id="historyContent" class="history-content"></div>
-      <div class="modal-actions">
-        <button id="resumeGameBtn" type="button">Resume game</button>
-      </div>
+      <div id="answersSoFarList" class="answers-so-far-list"></div>
     </div>
   </div>
 
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=20260521b"></script>
 </body>
 </html>
