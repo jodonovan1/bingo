@@ -49,6 +49,12 @@ button:active {
   border: 2px solid var(--line);
 }
 
+.highlight-btn {
+  background: #fef3c7;
+  color: var(--ink);
+  border: 3px solid #92400e;
+}
+
 .app-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -196,6 +202,35 @@ h1 {
   font-weight: 700;
 }
 
+.answer-history {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 18px 22px;
+  border: 2px solid var(--line);
+  background: #ffffff;
+  border-radius: 18px;
+  text-align: left;
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.answer-history h3 {
+  margin: 0 0 10px;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.answer-history ol {
+  columns: 2;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.answer-history li {
+  break-inside: avoid;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
 .hidden {
   display: none;
 }
@@ -212,5 +247,9 @@ h1 {
 
   .answer-choices {
     grid-template-columns: 1fr;
+  }
+
+  .answer-history ol {
+    columns: 1;
   }
 }

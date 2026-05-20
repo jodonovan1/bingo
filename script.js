@@ -7,17 +7,20 @@ const questionText = document.getElementById('questionText');
 const answerChoices = document.getElementById('answerChoices');
 const feedback = document.getElementById('feedback');
 const roundLabel = document.getElementById('roundLabel');
+const answerHistoryPanel = document.getElementById('answerHistoryPanel');
 
 const newGridBtn = document.getElementById('newGridBtn');
 const startBtn = document.getElementById('startBtn');
 const revealBtn = document.getElementById('revealBtn');
 const nextBtn = document.getElementById('nextBtn');
+const checkBtn = document.getElementById('checkBtn');
 const backToGridBtn = document.getElementById('backToGridBtn');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 
 let currentQuestion = null;
 let questionNumber = 0;
 let recentNumbers = [];
+let answerHistory = [];
 
 const explanations = {
   2: number => `${number} can be divided by 2 because it ends in an even digit.`,
@@ -53,6 +56,9 @@ function startGame() {
   gamePanel.classList.remove('hidden');
   questionNumber = 0;
   recentNumbers = [];
+  answerHistory = [];
+  answerHistoryPanel.classList.add('hidden');
+  answerHistoryPanel.innerHTML = '';
   nextQuestion();
 }
 
@@ -79,6 +85,7 @@ function nextQuestion() {
 
   feedback.classList.add('hidden');
   feedback.textContent = '';
+  answerHistoryPanel.classList.add('hidden');
   revealBtn.disabled = false;
 }
 
@@ -94,7 +101,34 @@ function revealAnswer() {
 
   feedback.innerHTML = `<strong>Answer: ${currentQuestion.correctDivisor}</strong><br>${explanations[currentQuestion.correctDivisor](currentQuestion.number)}`;
   feedback.classList.remove('hidden');
+  addToAnswerHistory(currentQuestion);
   revealBtn.disabled = true;
+}
+
+function addToAnswerHistory(question) {
+  const alreadyStored = answerHistory.some(item => item.questionNumber === questionNumber);
+  if (alreadyStored) return;
+
+  answerHistory.push({
+    questionNumber,
+    number: question.number,
+    correctDivisor: question.correctDivisor
+  });
+}
+
+function checkSoFar() {
+  if (answerHistory.length === 0) {
+    answerHistoryPanel.innerHTML = '<h3>Answers so far</h3><p>No answers have been revealed yet.</p>';
+    answerHistoryPanel.classList.remove('hidden');
+    return;
+  }
+
+  const items = answerHistory
+    .map(item => `<li>Q${item.questionNumber}: ${item.number} → ${item.correctDivisor}</li>`)
+    .join('');
+
+  answerHistoryPanel.innerHTML = `<h3>Answers so far</h3><ol>${items}</ol>`;
+  answerHistoryPanel.classList.remove('hidden');
 }
 
 function generateQuestion() {
@@ -181,6 +215,7 @@ newGridBtn.addEventListener('click', generateGrid);
 startBtn.addEventListener('click', startGame);
 revealBtn.addEventListener('click', revealAnswer);
 nextBtn.addEventListener('click', nextQuestion);
+checkBtn.addEventListener('click', checkSoFar);
 backToGridBtn.addEventListener('click', backToGrid);
 fullscreenBtn.addEventListener('click', toggleFullscreen);
 
